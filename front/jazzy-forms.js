@@ -108,32 +108,37 @@ function jazzy_forms($, form_id, graph) {
         var input_id_header = 'jzzf_' + form_id + '_';
         var input_id = '';
         var input_label = '';
+        var key_org = '';
       // add 20180605 end
         set_message(button, graph.form.email.sending);
         var values = {};
         for(var key in graph.email) {
           // add 20180605 start
-            if(typeof graph.data[key] !== 'undefined'){
-                input_id = input_id_header + key;
-                key_select = key + '_select'; // add 20180605
-                if($('input[name='+ input_id +']:checked').length === 1){
-                    // ラジオボタンの場合
-                    input_id = $('input[name='+ input_id +']:checked')[0].id;
-                    input_label = $('[for="' + input_id + '"]')[0].innerHTML;
-                    values[key_select] = input_label; 
-                }else if(document.getElementById(input_id).checked === true){
-                    // チェックボックスの場合
-                    input_label = $('[for="' + input_id + '"]')[0].innerHTML;
-                    values[key_select] = input_label; 
-                }else if(document.getElementById(input_id).type === "select-one"){
-                    input_label = document.getElementById(input_id).value;
-                    values[key_select] = input_label; 
-                }else{
-                    values[key_select] = ''; 
-                }
+            key_org = key.replace(new RegExp('_select'+"$"), "");
+            if(key_org != key){
+              if(typeof graph.data[key_org] !== 'undefined'){
+                  input_id = input_id_header + key_org;
+                  key_select = key_org + '_select'; // add 20180605
+                  if($('input[name='+ input_id +']:checked').length === 1){
+                      // ラジオボタンの場合
+                      input_id = $('input[name='+ input_id +']:checked')[0].id;
+                      input_label = $('[for="' + input_id + '"]')[0].innerHTML;
+                      values[key_select] = input_label; 
+                  }else if(document.getElementById(input_id).checked === true){
+                      // チェックボックスの場合
+                      input_label = $('[for="' + input_id + '"]')[0].innerHTML;
+                      values[key_select] = input_label; 
+                  }else if(document.getElementById(input_id).type === "select-one"){
+                      input_label = document.getElementById(input_id).value;
+                      values[key_select] = input_label; 
+                  }else{
+                      values[key_select] = ''; 
+                  }
+              }
+            }else{
+              values[key] = calculator.placeholder(graph.email[key]);
             }
           // add 20180605 end
-            values[key] = calculator.placeholder(graph.email[key]);
         }
         var obj = $.ajax({
             "type": "POST",
