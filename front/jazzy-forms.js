@@ -195,6 +195,12 @@ function jazzy_forms($, form_id, graph) {
                     var valid = element(id).find('option:selected').index() > 0;
                     break;
             }
+            switch(id){
+              case 'mail':
+              case 'email':
+                var valid = MailCheck( element(id).val() );
+                break;
+            }
             if(!valid) {
                 add_element_error(id, graph.required[id]);
                 incomplete = true;
@@ -204,6 +210,12 @@ function jazzy_forms($, form_id, graph) {
             set_form_error(graph.form.incomplete);
         }
         return !incomplete;
+    }
+  
+    function MailCheck( mail ) {
+      var check = mail.match(/^[a-zA-Z0-9.!#$%&'*+\/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/);
+      if(check == null) return false;
+      return true;
     }
     
     function update(id) {
